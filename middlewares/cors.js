@@ -1,6 +1,6 @@
 const allowedCors = [
-  'http://pastukhovoa.nomoredomains.club',
-  'https://pastukhovoa.nomoredomains.club',
+  'http://diploma.pastukhovoa.ru',
+  'https://diploma.pastukhovoa.ru',
   'http://localhost:3000',
   'https://localhost:3000',
   'http://localhost:3006',
