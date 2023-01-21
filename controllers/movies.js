@@ -59,18 +59,22 @@ const getMovies = async (req, res, next) => {
 };
 
 const deleteMovie = async (req, res, next) => {
-  const { _id } = req.user;
-  const { movieId } = req.params;
   try {
+    const userId = req.user._id;
+    const { movieId } = req.params;
     const movie = await Movie.findById(movieId);
     if (!movie) {
       throw new NotFoundError('Movie not found');
     }
-    if (movie.owner.valueOf() !== _id) {
+    const movieOwnerId = movie.owner.valueOf();
+    if (movieOwnerId !== userId) {
       throw new ForbiddenError('Forbidden');
     }
     const deletedMovie = await Movie.findByIdAndRemove(movieId);
-    return res.status(200).json(deletedMovie);
+    if (!deletedMovie) {
+      return next(new NotFoundError('Movie not found'));
+    }
+    return res.status(200).send('Deleted');
   } catch (e) {
     return next(e);
   }

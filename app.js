@@ -3,21 +3,21 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// eslint-disable-next-line import/no-extraneous-dependencies
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 const helmet = require('helmet');
+const { limiter } = require('./middlewares/rateLimiter');
 const errorHandler = require('./middlewares/errorHandler');
-const { login, createUser } = require('./controllers/users');
-const NotFoundError = require('./errors/NotFoundError');
-const auth = require('./middlewares/auth');
+const router = require('./routes');
 const cors = require('./middlewares/cors');
-const {
-  signUp, signIn,
-} = require('./middlewares/validations');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const {
+  PORT,
+  NODE_ENV,
+  MONGO_URL,
+  MONGO_URL_DEV,
+} = require('./utils/constants');
 
-const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(bodyParser.json());
@@ -29,29 +29,16 @@ app.use(requestLogger); // подключаем логгер запросов
 app.use(cookieParser());
 app.use(helmet());
 
-// app.get('/crash-test', () => {
-//   setTimeout(() => {
-//     throw new Error('Сервер сейчас упадёт');
-//   }, 0);
-// });
+app.use(limiter);
 
-app.post('/signup', signUp, createUser);
-app.post('/signin', signIn, login);
-
-app.use(auth);
-app.use('/', require('./routes/users'));
-app.use('/', require('./routes/movies'));
-
-app.use('*', (req, res, next) => {
-  next(new NotFoundError('Not found'));
-});
+app.use(router);
 
 app.use(errorLogger); // подключаем логгер ошибок
 
 app.use(errors());
 app.use(errorHandler);
 
-mongoose.connect('mongodb://127.0.0.1:27017/bitfilmsdb', {
+mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : MONGO_URL_DEV, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }, () => {
