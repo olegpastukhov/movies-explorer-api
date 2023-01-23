@@ -42,10 +42,8 @@ mongoose.connect(NODE_ENV === 'production' ? MONGO_URL : MONGO_URL_DEV, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 }, () => {
-  // eslint-disable-next-line no-console
   console.log('Connected to MongoDB!');
   app.listen(PORT, () => {
-    // eslint-disable-next-line no-console
     console.log(`App listening to port: ${PORT}!`);
   });
 });

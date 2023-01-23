@@ -26,23 +26,42 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// eslint-disable-next-line func-names
-userSchema.statics.findUserByCredentials = function (email, password) {
+function findUserByCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        throw new UnauthorizedError('Invalid password or email 1');
+        throw new UnauthorizedError('Invalid password or email');
       }
 
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            throw new UnauthorizedError('Invalid password or email 1');
+            throw new UnauthorizedError('Invalid password or email');
           }
 
           return user; // теперь user доступен
         });
     });
-};
+}
+
+userSchema.statics.findUserByCredentials = findUserByCredentials;
+
+// userSchema.statics.findUserByCredentials = function (email, password) {
+//   return this.findOne({ email }).select('+password')
+//     .then((user) => {
+//       if (!user) {
+//         throw new UnauthorizedError('Invalid password or email');
+//       }
+
+//       return bcrypt.compare(password, user.password)
+//         .then((matched) => {
+//           if (!matched) {
+//             throw new UnauthorizedError('Invalid password or email');
+//           }
+
+//           return user; // теперь user доступен
+//         });
+//     });
+// };
 
 module.exports = mongoose.model('user', userSchema);

@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-// eslint-disable-next-line import/no-unresolved
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -43,7 +42,6 @@ const createUser = async (req, res, next) => {
   }
 };
 
-// eslint-disable-next-line consistent-return
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -63,7 +61,7 @@ const login = async (req, res, next) => {
         sameSite: 'none',
         secure: true,
       });
-      res.send({ message: 'Token was saved in the cookies.' });
+      res.send({ message: 'Token was saved in the cookies' });
     }
     return res.status(201).send('Authorized');
   } catch (e) {
@@ -90,9 +88,11 @@ const getCurrentUser = async (req, res, next) => {
 const updateUser = async (req, res, next) => {
   try {
     const { name, email } = req.body;
-    // eslint-disable-next-line no-underscore-dangle
+    const emailCheck = await User.findOne({ email });
+    if (emailCheck) {
+      next(new ConflictError(`User with ${email} already exists`));
+    }
     const user = await User.findByIdAndUpdate(
-      // eslint-disable-next-line no-underscore-dangle
       req.user._id,
       { name, email },
       { new: true, runValidators: true },
@@ -109,9 +109,9 @@ const updateUser = async (req, res, next) => {
   }
 };
 
-// eslint-disable-next-line arrow-body-style
 const logout = (req, res) => {
-  return res.cookie('jwt', { expires: Date.now() }).send({ message: 'Token was deleted from cookies' });
+  res.clearCookie('jwt').send({ message: 'Token was deleted from cookies' });
+  // return res.cookie('jwt', { expires: Date.now() }).send({ message: 'Token was deleted' });
 };
 
 module.exports = {

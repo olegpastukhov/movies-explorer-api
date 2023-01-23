@@ -9,18 +9,18 @@ const {
 
 const auth = require('../middlewares/auth');
 
-router.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Server will fall soon');
-  }, 0);
-});
-
 router.post('/signup', signUp, createUser);
 router.post('/signin', signIn, login);
 
 router.use(auth);
 router.use('/', require('./users'));
 router.use('/', require('./movies'));
+
+// router.get('/crash-test', () => {
+//   setTimeout(() => {
+//     throw new Error('Server will fall soon');
+//   }, 0);
+// });
 
 router.post('/signout', logout);
 
