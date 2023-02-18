@@ -12,13 +12,13 @@ const router = require('./routes');
 const cors = require('./middlewares/cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const {
-  PORT,
   NODE_ENV,
   MONGO_URL,
   MONGO_URL_DEV,
 } = require('./utils/constants');
 
 const app = express();
+const PORT = '3001';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
