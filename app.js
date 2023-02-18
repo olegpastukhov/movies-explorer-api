@@ -15,10 +15,11 @@ const {
   NODE_ENV,
   MONGO_URL,
   MONGO_URL_DEV,
+  PORT,
 } = require('./utils/constants');
 
 const app = express();
-const PORT = '3001';
+// const PORT = '3001';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
