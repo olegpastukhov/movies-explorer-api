@@ -24,7 +24,7 @@ const getMovies = async (req, res, next) => {
     const movies = await Movie.find({ owner });
     if (movies.length === 0) {
       // res.json('Saved movies not found');
-      return res.status(200).send('Saved movies not found');
+      return res.status(200).send([]);
     }
     // return res.status(200).send(movies);
     return res.status(200).json(movies);
