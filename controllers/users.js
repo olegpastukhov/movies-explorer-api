@@ -61,7 +61,8 @@ const login = async (req, res, next) => {
         sameSite: 'none',
         secure: true,
       });
-      res.send({ message: 'Token was saved in the cookies' });
+      // res.send({ message: 'Token was saved in the cookies' });
+      res.send({ token });
     }
     return res.status(201).send('Authorized');
   } catch (e) {

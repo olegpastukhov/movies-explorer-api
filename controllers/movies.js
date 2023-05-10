@@ -23,8 +23,10 @@ const getMovies = async (req, res, next) => {
   try {
     const movies = await Movie.find({ owner });
     if (movies.length === 0) {
-      res.json('Saved movies not found');
+      // res.json('Saved movies not found');
+      return res.status(200).send([]);
     }
+    // return res.status(200).send(movies);
     return res.status(200).json(movies);
   } catch (e) {
     return next(e);
@@ -45,6 +47,7 @@ const deleteMovie = async (req, res, next) => {
     }
     await Movie.findByIdAndRemove(movieId);
     return res.status(200).json(`The movie with id ${movieId} has been deleted`);
+    // return res.status(200);
   } catch (e) {
     return next(e);
   }
